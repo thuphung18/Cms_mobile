@@ -3,6 +3,7 @@ import 'package:cms_mobile/models/post_model.dart';
 import 'package:cms_mobile/services/api_service.dart';
 import 'package:cms_mobile/screens/create_post_screen.dart';
 import 'package:cms_mobile/screens/login_screen.dart';
+import 'package:cms_mobile/screens/user_post_list_screen.dart'; // 🎯 ĐÃ THÊM: Import màn hình User công khai
 
 class PostListScreen extends StatefulWidget {
   const PostListScreen({Key? key}) : super(key: key);
@@ -69,14 +70,14 @@ class _PostListScreenState extends State<PostListScreen> {
     }
   }
 
-  // Thay thế triệt để luồng logout để giải phóng bộ nhớ lưu trữ token cũ
+  // Hàm xử lý Logout đưa Admin quay thẳng về màn hình User đọc báo
   void _handleLogout() async {
     await _apiService.logout();
     if (mounted) {
-      // Dùng pushAndRemoveUntil để xóa sạch toàn bộ các màn hình cũ, ép app quay về Login ban đầu
+      // 🎯 ĐÃ SỬA: Dùng pushAndRemoveUntil để xóa sạch lịch sử Admin, ép app quay về User Screen
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-            (route) => false,
+        MaterialPageRoute(builder: (context) => const UserPostListScreen()),
+            (route) => false, // Khóa chặt nút Back của điện thoại
       );
     }
   }
@@ -102,7 +103,7 @@ class _PostListScreenState extends State<PostListScreen> {
     ) ?? false;
 
     if (confirm) {
-      // 🎯 CẬP NHẬT CỤC BỘ: Xóa trực tiếp trên UI trước để người dùng thấy mượt mà
+      // CẬP NHẬT CỤC BỘ: Xóa trực tiếp trên UI trước để người dùng thấy mượt mà
       setState(() {
         _posts.removeWhere((post) => post.id == id);
       });
@@ -129,6 +130,7 @@ class _PostListScreenState extends State<PostListScreen> {
         title: const Text('Admin CMS - Bài viết'),
         backgroundColor: Colors.blueAccent,
         foregroundColor: Colors.white,
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),

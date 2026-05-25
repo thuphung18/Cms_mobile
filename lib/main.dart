@@ -1,3 +1,4 @@
+import 'package:cms_mobile/screens/user_post_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const LoginScreen(), // Khởi chạy từ màn hình login
+      home: const UserPostListScreen(), // Khởi chạy từ màn hình login
     );
   }
 }
