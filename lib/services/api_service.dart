@@ -90,7 +90,7 @@ class ApiService {
             value: result.refreshToken,
           );
 
-          print("✅ LOGIN SUCCESS");
+          print("LOGIN SUCCESS");
           return true;
         }
       }
@@ -101,6 +101,18 @@ class ApiService {
       print("LOGIN ERROR: $e");
       return false;
     }
+  }
+  // Hàm lấy chi tiết bài viết dành riêng cho Admin (Gọi endpoint của Admin - Không tăng view)
+  Future<PostDto?> getAdminPostById(String id) async {
+    try {
+      final response = await _dio.get('api/admin/posts/$id');
+      if (response.statusCode == 200) {
+        return PostDto.fromJson(response.data);
+      }
+    } catch (e) {
+      print("LỖI LẤY CHI TIẾT ADMIN: $e");
+    }
+    return null;
   }
 
   // user public get

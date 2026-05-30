@@ -114,14 +114,17 @@ class _UserPostListScreenState extends State<UserPostListScreen> {
           elevation: 3,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: InkWell(
-            onTap: () {
-              Navigator.push(
+            onTap: () async{
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   // Đổi 'postId' thành 'post.id' để lấy đúng ID của bài viết hiện tại
                   builder: (context) => PostDetailScreen(postId: post.id),
                 ),
               );
+              // lệnh này chỉ chạy khi người dùng back lại  màn hình
+              // gọi lại api để nạp lại danh sách + view count từ db
+              _fetchPosts(page: _currentPage);
             },
             child: Padding(
               padding: const EdgeInsets.all(10),

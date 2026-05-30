@@ -6,8 +6,10 @@ import "package:flutter_widget_from_html/flutter_widget_from_html.dart";
 class PostDetailScreen extends StatefulWidget{
   // khai báo final để lưu trữ postId
   final String postId;
+  final bool isAdmin;
   // tạo constructor nhận postId qia từ khóa required
-  const PostDetailScreen({super.key,required this.postId});
+  // nếu không có gì thay đổi mặc định là user đang đọc
+  const PostDetailScreen({super.key,required this.postId, this.isAdmin=false});
   @override
   State<PostDetailScreen> createState()=> _PostDetailScreenState();
 
@@ -27,18 +29,18 @@ class _PostDetailScreenState extends State<PostDetailScreen>{
     _fetchPostDetail();
   }
   // gọi api từ apiservice
-  void _fetchPostDetail() async{
-    // xử lí bất đồng bộ
-    // gọi apt và truyền vào postid lấy từ widget phía trên
-    final result=await _apiService.getPostById(widget.postId);
-    if(mounted)
-      {
-        setState(() {
-          _postDto=result;// lưu dữ liệu vào biến cục bộ
-          _isloading=false;// tắt vòng xoay tải dữ liệu
-        });
-      }
+  void _fetchPostDetail() async {
+    // Kiểm tra: Nếu là admin thì gọi hàm Admin API, ngược lại gọi Public API
+    final result = widget.isAdmin
+        ? await _apiService.getAdminPostById(widget.postId)  // Endpoint Admin (Không tăng view)
+        : await _apiService.getPostById(widget.postId);       // Endpoint Public (Có tăng view)
 
+    if (mounted) {
+      setState(() {
+        _postDto = result;
+        _isloading = false;
+      });
+    }
   }
 
   @override

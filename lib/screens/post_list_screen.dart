@@ -246,7 +246,7 @@ class _PostListScreenState extends State<PostListScreen> {
                                 context,
                                 MaterialPageRoute(
                                   // Đổi 'postId' thành 'post.id' để lấy đúng ID của bài viết hiện tại
-                                  builder: (context) => PostDetailScreen(postId: post.id),
+                                  builder: (context) => PostDetailScreen(postId: post.id,isAdmin: true),
                                 ),
                               );
                             },
