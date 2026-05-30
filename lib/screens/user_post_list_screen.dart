@@ -1,3 +1,4 @@
+import 'package:cms_mobile/screens/post_detail_screen.dart';
 import 'package:flutter/material.dart';
 import '../models/post_model.dart';
 import '../services/api_service.dart';
@@ -114,7 +115,13 @@ class _UserPostListScreenState extends State<UserPostListScreen> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: InkWell(
             onTap: () {
-              print('Xem chi tiết bài viết: ${post.id}');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  // Đổi 'postId' thành 'post.id' để lấy đúng ID của bài viết hiện tại
+                  builder: (context) => PostDetailScreen(postId: post.id),
+                ),
+              );
             },
             child: Padding(
               padding: const EdgeInsets.all(10),
@@ -172,6 +179,7 @@ class _UserPostListScreenState extends State<UserPostListScreen> {
                             ),
                           ],
                         ),
+
                       ],
                     ),
                   ),
