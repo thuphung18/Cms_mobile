@@ -1,3 +1,4 @@
+import 'package:cms_mobile/Dto/PostDto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -12,7 +13,7 @@ class ApiService {
   ApiService() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: 'http://192.168.1.110:5000/',
+        baseUrl: 'http://192.168.1.110:5000/', // local host
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         headers: {
@@ -64,21 +65,17 @@ class ApiService {
     );
   }
 
-  // =========================================================
-  // LOGIN
-  // =========================================================
+  //login
 
   Future<bool> login(String username, String password) async {
     try {
       final response = await _dio.post(
         'api/admin/auth',
-        data: {
-          'username': username,
-          'password': password,
-        },
+        data: {'username': username, 'password': password},
       );
 
-      final isSuccess = response.statusCode != null &&
+      final isSuccess =
+          response.statusCode != null &&
           response.statusCode! >= 200 &&
           response.statusCode! < 300;
 
@@ -86,10 +83,7 @@ class ApiService {
         final result = AuthenticatedResult.fromJson(response.data);
 
         if (result.token != null && result.token!.isNotEmpty) {
-          await _storage.write(
-            key: 'access_token',
-            value: result.token,
-          );
+          await _storage.write(key: 'access_token', value: result.token);
 
           await _storage.write(
             key: 'refresh_token',
@@ -101,19 +95,15 @@ class ApiService {
         }
       }
 
-      print("❌ LOGIN FAILED");
+      print("LOGIN FAILED");
       return false;
-
     } catch (e) {
-      print("❌ LOGIN ERROR: $e");
+      print("LOGIN ERROR: $e");
       return false;
     }
   }
 
-  // =========================================================
-  // GET PUBLIC POSTS
-  // =========================================================
-
+  // user public get
   Future<PostPagingResult?> getPostsPaging({
     String keyword = '',
     String? categoryId,
@@ -125,30 +115,28 @@ class ApiService {
         'api/posts/paging',
         queryParameters: {
           'keyword': keyword,
-          if (categoryId != null) 'categoryId': categoryId,
+          'categoryId': ?categoryId,
           'pageIndex': pageIndex,
           'pageSize': pageSize,
         },
       );
 
-      final isSuccess = response.statusCode != null &&
+      final isSuccess =
+          response.statusCode != null &&
           response.statusCode! >= 200 &&
           response.statusCode! < 300;
 
       if (isSuccess) {
         return PostPagingResult.fromJson(response.data);
       }
-
     } catch (e) {
-      print("❌ GET POSTS ERROR: $e");
+      print("GET POSTS ERROR: $e");
     }
 
     return null;
   }
 
-  // =========================================================
-  // GET ADMIN POSTS
-  // =========================================================
+  // get post Admin
 
   Future<PostPagingResult?> getAdminPostsPaging({
     String keyword = '',
@@ -165,55 +153,69 @@ class ApiService {
         },
       );
 
-      final isSuccess = response.statusCode != null &&
+      final isSuccess =
+          response.statusCode != null &&
           response.statusCode! >= 200 &&
           response.statusCode! < 300;
 
       if (isSuccess) {
         return PostPagingResult.fromJson(response.data);
       }
-
     } catch (e) {
-      print("❌ GET ADMIN POSTS ERROR: $e");
+      print(" GET ADMIN POSTS ERROR: $e");
     }
 
     return null;
   }
 
-  // =========================================================
-  // DELETE POST
-  // =========================================================
+  //delete post
 
   Future<bool> deletePost(String id) async {
     try {
       final response = await _dio.delete(
         'api/admin/posts',
-        queryParameters: {
-          'ids': id,
-        },
-        options: Options(
-          listFormat: ListFormat.multi,
-        ),
+        queryParameters: {'ids': id},
+        options: Options(listFormat: ListFormat.multi),
       );
 
-      final isSuccess = response.statusCode != null &&
+      final isSuccess =
+          response.statusCode != null &&
           response.statusCode! >= 200 &&
           response.statusCode! < 300;
 
-      print("🗑 DELETE RESULT: $isSuccess");
+      print("DELETE RESULT: $isSuccess");
 
       return isSuccess;
-
     } catch (e) {
-      print("❌ DELETE POST ERROR: $e");
+      print("DELETE POST ERROR: $e");
       return false;
     }
   }
+  // Hàm lấy chi tiết bài viết bằng ID dành cho user
+  Future<PostDto?> getPostById(String id) async{
+    try{
+      // dùng $ để chèn giá trị  của id vào url path
+      final respone= await _dio.get(
+        'api/posts/$id'
 
-  // =========================================================
-  // CREATE POST
-  // =========================================================
-// 5. Hàm Tạo mới bài viết dành cho Admin (Cấu trúc Flat JSON chuẩn hóa)
+      );
+      // kieemr tra nếu trạng thái HTTP thành công 200
+      final isSuccess=respone.statusCode!=null&&
+    respone.statusCode!>=200&&respone.statusCode!<300;
+      if(isSuccess)
+        {
+          return PostDto.fromJson(respone.data);
+        }
+    }
+    catch(e){
+      print("lỗi tải chi tiết bài viêt $e");
+    }
+    // trả về null nếu xảy ra lỗi mạng || lỗi hệ thống
+    return null;
+  }
+
+  //create post
+  // 5. Hàm Tạo mới bài viết dành cho Admin (Cấu trúc Flat JSON chuẩn hóa)
   Future<bool> createPost({
     required String name,
     required String slug,
@@ -227,11 +229,12 @@ class ApiService {
   }) async {
     try {
       // Ép về chuỗi định dạng Guid rỗng thay vì truyền null để .NET Core không báo lỗi chuyển đổi hệ thống
-      final String safeCategoryId = (categoryId == null || categoryId.trim().isEmpty)
+      final String safeCategoryId =
+          (categoryId == null || categoryId.trim().isEmpty)
           ? '00000000-0000-0000-0000-000000000000'
           : categoryId.trim();
 
-      // Đưa dữ liệu về dạng phẳng (Không bọc đối tượng request nữa)
+      // Không bọc đối tượng request nữa
       final response = await _dio.post(
         'api/admin/posts',
         data: {
@@ -247,17 +250,16 @@ class ApiService {
         },
       );
 
-      print("📊 HTTP STATUS CODE TẠO BÀI VIẾT: ${response.statusCode}");
-      return response.statusCode != null && response.statusCode! >= 200 && response.statusCode! < 300;
+      print(" HTTP STATUS CODE TẠO BÀI VIẾT: ${response.statusCode}");
+      return response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300;
     } catch (e) {
-      print("❌ LỖI GẶP PHẢI KHI GỌI API: $e");
+      print("LỖI GẶP PHẢI KHI GỌI API: $e");
       return false;
     }
-
   }
-  // =========================================================
-  // TOKEN
-  // ======== =================================================
+  //token
 
   Future<String?> getToken() async {
     return await _storage.read(key: 'access_token');

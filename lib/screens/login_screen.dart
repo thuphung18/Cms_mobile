@@ -16,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // 🎯 BƯỚC 1: Khai báo thêm FocusNode cho ô mật khẩu
+  // Khai báo thêm FocusNode cho ô mật khẩu
   final FocusNode _passwordFocusNode = FocusNode();
 
   bool _isLoading = false;
@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 40),
 
-                // Ô nhập Username
+                // nhập Username
                 TextFormField(
                   controller: _usernameController,
                   textInputAction: TextInputAction.next, // Bấm Enter trên bàn phím sẽ nhảy sang ô mật khẩu
@@ -103,10 +103,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Ô nhập Password
+                // nhập Password
                 TextFormField(
                   controller: _passwordController,
-                  focusNode: _passwordFocusNode, // 🎯 BƯỚC 2: Gán focusNode vào đây
+                  focusNode: _passwordFocusNode, //  Gán focusNode vào đây
                   obscureText: _obscurePassword,
                   textInputAction: TextInputAction.done, // Đổi nút bàn phím thành nút Hoàn thành (Done)
                   onFieldSubmitted: (_) => _handleLogin(), // Nhấn nút Done trên bàn phím sẽ tự kích hoạt Đăng nhập
@@ -119,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         setState(() {
                           _obscurePassword = !_obscurePassword;
                         });
-                        // 🎯 BƯỚC 3: Ép hệ điều hành giữ lại con trỏ chuột và bàn phím ảo ngay sau khi bấm con mắt
+                        // Ép hệ điều hành giữ lại con trỏ chuột và bàn phím ảo ngay sau khi bấm con mắt
                         _passwordFocusNode.requestFocus();
                       },
                     ),
@@ -176,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
-    _passwordFocusNode.dispose(); // 🎯 BƯỚC 4: Giải phóng bộ nhớ focus khi thoát màn hình
+    _passwordFocusNode.dispose(); //Giải phóng bộ nhớ focus khi thoát màn hình
     super.dispose();
   }
 }

@@ -17,7 +17,7 @@ class _UserPostListScreenState extends State<UserPostListScreen> {
   PostPagingResult? _pagingResult;
   int _currentPage = 1;
 
-  // 🎯 ĐÃ SỬA: Thay BurnInState thành initState chuẩn vòng đời StatefulWidget
+  //  Thay BurnInState thành initState chuẩn vòng đời StatefulWidget
   @override
   void initState() {
     super.initState();
@@ -30,18 +30,18 @@ class _UserPostListScreenState extends State<UserPostListScreen> {
       _isLoading = true;
     });
 
-    print("📡 ĐANG GỌI API USER PAGING TẠI TRANG: $page...");
+    print("ĐANG GỌI API USER PAGING TẠI TRANG: $page...");
 
-    // 🎯 ĐÃ SỬA: Đổi từ getPostsPaging thành getPostPaging cho khớp với ApiService
+    // Đổi từ getPostsPaging thành getPostPaging cho khớp với ApiService
     final result = await _apiService.getPostsPaging(
       pageIndex: page,
       pageSize: 10,
     );
 
     if (result != null) {
-      print("📊 TẢI DATA USER THÀNH CÔNG! Nhận về: ${result.results.length} bài viết");
+      print("TẢI DATA USER THÀNH CÔNG! Nhận về: ${result.results.length} bài viết");
     } else {
-      print("❌ KẾT QUẢ API TRẢ VỀ NULL (Kiểm tra lại kết nối mạng hoặc lỗi parse JSON)");
+      print("KẾT QUẢ API TRẢ VỀ NULL (Kiểm tra lại kết nối mạng hoặc lỗi parse JSON)");
     }
 
     setState(() {
@@ -64,11 +64,11 @@ class _UserPostListScreenState extends State<UserPostListScreen> {
             icon: const Icon(Icons.admin_panel_settings, color: Colors.white),
             tooltip: 'Đăng nhập Admin',
             onPressed: () {
-              // 🎯 LỆNH CHUYỂN HƯỚNG SANG MÀN HÌNH ADMIN TẠI ĐÂY
+              // LỆNH CHUYỂN HƯỚNG SANG MÀN HÌNH ADMIN TẠI ĐÂY
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  // Tiến nhớ thay 'LoginScreen()' bằng tên Class màn hình Đăng nhập Admin của bạn nhé
+
                   builder: (context) => const LoginScreen(),
                 ),
               );
@@ -77,7 +77,7 @@ class _UserPostListScreenState extends State<UserPostListScreen> {
           const SizedBox(width: 8),
         ],
       ),
-      // 🔄 Tính năng vuốt màn hình từ trên xuống để load lại dữ liệu mới nhất
+      // Tính năng vuốt màn hình từ trên xuống để load lại dữ liệu mới nhất
       body: RefreshIndicator(
         onRefresh: () => _fetchPosts(page: 1),
         child: _buildBody(),
@@ -121,7 +121,7 @@ class _UserPostListScreenState extends State<UserPostListScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 🖼️ Khối hiển thị hình ảnh Thumbnail bài viết
+                  // Khối hiển thị hình ảnh Thumbnail bài viết
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: post.thumbnail != null && post.thumbnail!.isNotEmpty
@@ -136,7 +136,7 @@ class _UserPostListScreenState extends State<UserPostListScreen> {
                         : _buildPlaceholderImage(),
                   ),
                   const SizedBox(width: 12),
-                  // 📝 Khối thông tin Tiêu đề, Mô tả ngắn và Lượt xem
+                  // Khối thông tin Tiêu đề, Mô tả ngắn và Lượt xem
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

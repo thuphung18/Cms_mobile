@@ -48,6 +48,7 @@ class PostPagingResult {
     required this.results,
   });
 
+
   factory PostPagingResult.fromJson(Map<String, dynamic> json) {
     var list = json['results'] as List?;
     List<PostInListDto> postList = list != null
